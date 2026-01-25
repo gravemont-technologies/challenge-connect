@@ -1,56 +1,25 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Building2, GraduationCap, ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Building2, GraduationCap, ArrowLeft, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  BusinessStep1,
+  BusinessStep2,
+  BusinessStep3,
+  BusinessStep4,
+  BusinessStep5,
+} from "./demo/BusinessDemoSteps";
+import {
+  StudentStep1,
+  StudentStep2,
+  StudentStep3,
+  StudentStep4,
+  StudentStep5,
+} from "./demo/StudentDemoSteps";
 
 type DemoType = "business" | "student" | null;
-
-const businessSteps = [
-  {
-    title: "Post Your Challenge",
-    description: "Describe your business problem, set KPIs, and define success criteria. Our AI helps structure it for maximum clarity.",
-  },
-  {
-    title: "AI Finds Your Matches",
-    description: "Our algorithm scans student profiles, skills, and past performance to surface the top 5–10 candidates for your challenge.",
-  },
-  {
-    title: "Review Anonymized Work",
-    description: "Submissions arrive anonymized. Evaluate purely on merit—no bias, no names, just quality work.",
-  },
-  {
-    title: "Score & Provide Feedback",
-    description: "Rate submissions, leave actionable feedback. Top performers emerge based on objective criteria.",
-  },
-  {
-    title: "Extend Offers",
-    description: "Impressed? Offer internships or full-time roles directly to proven talent. Skip the traditional hiring funnel.",
-  },
-];
-
-const studentSteps = [
-  {
-    title: "Build Your Profile",
-    description: "Highlight your skills, coursework, and interests. The more complete, the better your matches.",
-  },
-  {
-    title: "Discover Challenges",
-    description: "Browse curated challenges matched to your expertise. See fit scores and estimated time commitments.",
-  },
-  {
-    title: "Submit Your Solution",
-    description: "Work on real problems, submit your approach. Your work speaks for itself—no interviews, no resumes.",
-  },
-  {
-    title: "Get Expert Feedback",
-    description: "Receive detailed feedback from industry professionals. Learn, iterate, improve.",
-  },
-  {
-    title: "Earn & Advance",
-    description: "Accumulate points, unlock badges, climb the leaderboard. Top performers get internship offers.",
-  },
-];
 
 interface DemoProps {
   onClose: () => void;
@@ -60,10 +29,8 @@ const InteractiveDemo = ({ onClose }: DemoProps) => {
   const [demoType, setDemoType] = useState<DemoType>(null);
   const [currentStep, setCurrentStep] = useState(0);
 
-  const steps = demoType === "business" ? businessSteps : studentSteps;
-
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -79,8 +46,64 @@ const InteractiveDemo = ({ onClose }: DemoProps) => {
     setCurrentStep(0);
   };
 
+  const renderBusinessStep = () => {
+    switch (currentStep) {
+      case 0:
+        return <BusinessStep1 onNext={handleNext} />;
+      case 1:
+        return <BusinessStep2 onNext={handleNext} onPrev={handlePrev} />;
+      case 2:
+        return <BusinessStep3 onNext={handleNext} onPrev={handlePrev} />;
+      case 3:
+        return <BusinessStep4 onNext={handleNext} onPrev={handlePrev} />;
+      case 4:
+        return <BusinessStep5 onNext={handleNext} onPrev={handlePrev} onClose={onClose} />;
+      default:
+        return null;
+    }
+  };
+
+  const renderStudentStep = () => {
+    switch (currentStep) {
+      case 0:
+        return <StudentStep1 onNext={handleNext} />;
+      case 1:
+        return <StudentStep2 onNext={handleNext} onPrev={handlePrev} />;
+      case 2:
+        return <StudentStep3 onNext={handleNext} onPrev={handlePrev} />;
+      case 3:
+        return <StudentStep4 onNext={handleNext} onPrev={handlePrev} />;
+      case 4:
+        return <StudentStep5 onNext={handleNext} onPrev={handlePrev} onClose={onClose} />;
+      default:
+        return null;
+    }
+  };
+
+  const stepLabels =
+    demoType === "business"
+      ? ["Define Task", "Launch", "Monitor", "Validate", "Convert"]
+      : ["Profile", "Match", "Submit", "Feedback", "Portfolio"];
+
   return (
     <div className="py-8">
+      {/* Simulation Tooltip */}
+      <TooltipProvider>
+        <div className="flex justify-center mb-6">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-muted rounded-full text-sm text-muted-foreground cursor-help">
+                <Info className="w-4 h-4" />
+                <span>Interactive Demo</span>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs">
+              <p>This simulates the real app – sign up to use live features with actual data.</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      </TooltipProvider>
+
       <AnimatePresence mode="wait">
         {!demoType ? (
           <motion.div
@@ -116,83 +139,61 @@ const InteractiveDemo = ({ onClose }: DemoProps) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className="max-w-2xl mx-auto"
+            className="max-w-xl mx-auto"
           >
-            {/* Progress indicator */}
-            <div className="flex items-center justify-center gap-2 mb-8">
-              {steps.map((_, index) => (
-                <div
-                  key={index}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    index === currentStep
-                      ? "w-8 bg-primary"
-                      : index < currentStep
-                      ? "w-2 bg-primary/60"
-                      : "w-2 bg-border"
-                  }`}
-                />
-              ))}
+            {/* Step indicator */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-2">
+                {stepLabels.map((label, index) => (
+                  <div
+                    key={index}
+                    className={`flex flex-col items-center flex-1 ${
+                      index <= currentStep ? "text-primary" : "text-muted-foreground"
+                    }`}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                        index < currentStep
+                          ? "bg-primary text-primary-foreground"
+                          : index === currentStep
+                          ? "bg-primary/20 text-primary border-2 border-primary"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {index + 1}
+                    </div>
+                    <span className="text-xs mt-1 hidden sm:block">{label}</span>
+                  </div>
+                ))}
+              </div>
+              {/* Progress line */}
+              <div className="flex items-center gap-1 px-4">
+                {[0, 1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className={`h-1 flex-1 rounded-full transition-colors ${
+                      i < currentStep ? "bg-primary" : "bg-muted"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
 
             {/* Step content */}
             <AnimatePresence mode="wait">
-              <motion.div
-                key={currentStep}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.25 }}
-                className="bg-card rounded-lg shadow-sm p-8 text-center"
-              >
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
-                  <span className="text-primary font-semibold text-lg">{currentStep + 1}</span>
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-4">
-                  {steps[currentStep].title}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {steps[currentStep].description}
-                </p>
-              </motion.div>
+              {demoType === "business" ? renderBusinessStep() : renderStudentStep()}
             </AnimatePresence>
 
-            {/* Navigation */}
-            <div className="flex items-center justify-between mt-8">
-              <Button
-                variant="ghost"
-                onClick={handlePrev}
-                disabled={currentStep === 0}
-                className="text-muted-foreground"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Previous
-              </Button>
-
+            {/* Reset button */}
+            <div className="mt-6 text-center">
               <Button
                 variant="ghost"
                 onClick={handleReset}
                 className="text-muted-foreground"
               >
+                <ArrowLeft className="w-4 h-4 mr-2" />
                 Change Role
               </Button>
-
-              {currentStep < steps.length - 1 ? (
-                <Button
-                  onClick={handleNext}
-                  className="bg-accent text-accent-foreground hover:bg-accent/90"
-                >
-                  Next
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              ) : (
-                <Button
-                  onClick={onClose}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                  Got It
-                </Button>
-              )}
             </div>
           </motion.div>
         )}
