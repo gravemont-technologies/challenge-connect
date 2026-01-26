@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, Upload, Code, CheckCircle, AlertCircle, Sparkles, Users } from "lucide-react";
+import { FileText, Upload, Code, CheckCircle, AlertCircle, Sparkles, Users, AlertTriangle, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,26 +23,38 @@ const SubmissionStep = ({ challenge, onSubmit, onBack }: SubmissionStepProps) =>
     score: number;
     feedback: string[];
     warnings: string[];
+    flags: {
+      plagiarismRisk: boolean;
+      formatCompliant: boolean;
+      issueCount: number;
+    };
   } | null>(null);
 
   const handlePreScore = () => {
     setIsSubmitting(true);
     
-    // Simulate AI pre-scoring
+    // Simulate AI pre-scoring with detailed analysis
     setTimeout(() => {
       const wordCount = content.split(/\s+/).filter(Boolean).length;
       const hasNumbers = /\d/.test(content);
-      const hasTechnicalTerms = /algorithm|optimization|analysis|data|model|forecast/i.test(content);
+      const hasTechnicalTerms = /algorithm|optimization|analysis|data|model|forecast|efficiency|reduce|improve/i.test(content);
+      const hasPercentages = /%|\d+\s*percent/i.test(content);
       
       let score = 50;
       const feedback: string[] = [];
       const warnings: string[] = [];
+      let issueCount = 0;
 
-      if (wordCount > 50) {
-        score += 15;
+      // Detailed scoring logic
+      if (wordCount > 100) {
+        score += 20;
+        feedback.push("Comprehensive detail level");
+      } else if (wordCount > 50) {
+        score += 10;
         feedback.push("Good detail level");
       } else {
-        warnings.push("Consider adding more detail");
+        warnings.push("Consider adding more detail (min 50 words recommended)");
+        issueCount++;
       }
 
       if (hasNumbers) {
@@ -55,17 +67,41 @@ const SubmissionStep = ({ challenge, onSubmit, onBack }: SubmissionStepProps) =>
         feedback.push("Uses appropriate technical terminology");
       } else {
         warnings.push("Add technical methodology details");
+        issueCount++;
+      }
+
+      if (hasPercentages) {
+        score += 10;
+        feedback.push("Addresses KPI metrics directly");
       }
 
       if (content.toLowerCase().includes("20%") || content.toLowerCase().includes("cost reduction")) {
-        score += 10;
-        feedback.push("Addresses KPI directly");
+        score += 5;
+        feedback.push("Matches target KPI threshold");
       }
 
-      // Add some randomness for realism
-      score = Math.min(100, Math.max(40, score + Math.floor(Math.random() * 10)));
+      // Check for potential issues
+      const plagiarismRisk = content.includes("Lorem ipsum") || content.split(" ").length < 10;
+      const formatCompliant = wordCount >= 30 && hasTechnicalTerms;
 
-      setPreScore({ score, feedback, warnings });
+      // Cap and add randomness
+      score = Math.min(100, Math.max(40, score + Math.floor(Math.random() * 10) - 5));
+
+      // Auto-reject threshold check
+      if (score < 50) {
+        warnings.unshift("⚠️ Below auto-filter threshold (50%). Submission may be auto-rejected.");
+      }
+
+      setPreScore({ 
+        score, 
+        feedback, 
+        warnings,
+        flags: {
+          plagiarismRisk,
+          formatCompliant,
+          issueCount,
+        }
+      });
       setIsSubmitting(false);
     }, 1500);
   };
@@ -79,7 +115,15 @@ const SubmissionStep = ({ challenge, onSubmit, onBack }: SubmissionStepProps) =>
   const getScoreColor = (score: number) => {
     if (score >= 80) return "text-emerald-600";
     if (score >= 60) return "text-amber-600";
+    if (score >= 50) return "text-orange-500";
     return "text-red-500";
+  };
+
+  const getScoreLabel = (score: number) => {
+    if (score >= 85) return "Excellent";
+    if (score >= 70) return "Good";
+    if (score >= 50) return "Needs Work";
+    return "Below Threshold";
   };
 
   return (
@@ -116,13 +160,25 @@ const SubmissionStep = ({ challenge, onSubmit, onBack }: SubmissionStepProps) =>
         </div>
       </Card>
 
+      {/* Submission guidelines */}
+      <Card className="p-3 bg-blue-50 dark:bg-blue-950/20 border-0">
+        <p className="text-xs text-blue-700 dark:text-blue-300 font-medium mb-1">Submission Tips:</p>
+        <ul className="text-xs text-blue-600 dark:text-blue-400 space-y-0.5">
+          <li>• Include specific metrics and percentages</li>
+          <li>• Describe your methodology clearly</li>
+          <li>• Reference the KPI targets in your approach</li>
+        </ul>
+      </Card>
+
       {/* Submission form */}
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="submission">Your Submission</Label>
           <Textarea
             id="submission"
-            placeholder="Describe your approach, methodology, and findings. Include key metrics and how you achieved the KPI targets..."
+            placeholder="Describe your approach, methodology, and findings. Include key metrics and how you achieved the KPI targets...
+
+Example: 'Using dynamic clustering analysis on the delivery route data, I identified optimization opportunities that could reduce transit time by approximately 23%. The methodology involved...'"
             value={content}
             onChange={(e) => {
               setContent(e.target.value);
@@ -130,9 +186,12 @@ const SubmissionStep = ({ challenge, onSubmit, onBack }: SubmissionStepProps) =>
             }}
             className="min-h-[150px]"
           />
-          <p className="text-xs text-muted-foreground text-right">
-            {content.split(/\s+/).filter(Boolean).length} words
-          </p>
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span className={content.split(/\s+/).filter(Boolean).length < 30 ? "text-amber-600" : ""}>
+              {content.split(/\s+/).filter(Boolean).length} words (min 30 recommended)
+            </span>
+            <span>Auto-filter threshold: 50/100</span>
+          </div>
         </div>
 
         {/* File upload simulation */}
@@ -174,7 +233,12 @@ const SubmissionStep = ({ challenge, onSubmit, onBack }: SubmissionStepProps) =>
         >
           <Card className="p-4 bg-card border-0 shadow-sm">
             <div className="flex items-center justify-between mb-3">
-              <span className="font-medium">AI Pre-Score</span>
+              <div>
+                <span className="font-medium">AI Pre-Score</span>
+                <Badge variant="secondary" className="ml-2 text-xs">
+                  {getScoreLabel(preScore.score)}
+                </Badge>
+              </div>
               <div className={`text-2xl font-bold ${getScoreColor(preScore.score)}`}>
                 {preScore.score}/100
               </div>
@@ -184,6 +248,31 @@ const SubmissionStep = ({ challenge, onSubmit, onBack }: SubmissionStepProps) =>
               value={preScore.score} 
               className="h-2 mb-4"
             />
+
+            {/* AI Flags */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              <Badge 
+                variant={preScore.flags.plagiarismRisk ? "destructive" : "outline"}
+                className="text-xs"
+              >
+                {preScore.flags.plagiarismRisk ? (
+                  <><AlertTriangle className="w-3 h-3 mr-1" /> Originality Check</>
+                ) : (
+                  <><CheckCircle className="w-3 h-3 mr-1" /> Original</>
+                )}
+              </Badge>
+              <Badge 
+                variant={preScore.flags.formatCompliant ? "outline" : "secondary"}
+                className="text-xs"
+              >
+                {preScore.flags.formatCompliant ? "Format OK" : "Format Issues"}
+              </Badge>
+              {preScore.flags.issueCount > 0 && (
+                <Badge variant="secondary" className="text-xs">
+                  {preScore.flags.issueCount} issue(s) flagged
+                </Badge>
+              )}
+            </div>
 
             {preScore.feedback.length > 0 && (
               <div className="mb-3">
@@ -212,6 +301,16 @@ const SubmissionStep = ({ challenge, onSubmit, onBack }: SubmissionStepProps) =>
                 </ul>
               </div>
             )}
+
+            {/* Edit and retry option */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setPreScore(null)}
+              className="w-full mt-3 text-xs"
+            >
+              Edit & Re-score
+            </Button>
           </Card>
         </motion.div>
       )}
@@ -222,10 +321,10 @@ const SubmissionStep = ({ challenge, onSubmit, onBack }: SubmissionStepProps) =>
         </Button>
         <Button
           onClick={handleFinalSubmit}
-          disabled={!preScore}
+          disabled={!preScore || preScore.score < 50}
           className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
         >
-          Submit Final
+          {preScore && preScore.score < 50 ? "Score Too Low" : "Submit Final"}
         </Button>
       </div>
     </motion.div>

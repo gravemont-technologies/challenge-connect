@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Award, Star, TrendingUp, CheckCircle, Users, MessageSquare, FileText } from "lucide-react";
+import { Award, Star, TrendingUp, CheckCircle, Users, MessageSquare, FileText, Bot, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -176,19 +176,40 @@ const FeedbackStep = ({ submission, onContinue, onBack }: FeedbackStepProps) => 
         </motion.div>
       )}
 
-      {/* Human feedback */}
+      {/* Human feedback - showing hybrid 80/20 split */}
       {humanFeedback && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <Card className="p-4 bg-muted/30 border-0">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-3">
               <MessageSquare className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">Human Reviewer Feedback</span>
-              <Badge variant="secondary" className="text-xs">20% of evaluation</Badge>
+              <span className="text-sm font-medium">Hybrid Feedback</span>
             </div>
-            <p className="text-sm text-muted-foreground italic">"{humanFeedback}"</p>
+            
+            {/* 80% AI feedback */}
+            <div className="mb-3 p-3 bg-card rounded-lg">
+              <div className="flex items-center gap-2 mb-1">
+                <Bot className="w-3 h-3 text-blue-600" />
+                <span className="text-xs font-medium text-blue-600">AI Analysis (80%)</span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {submission.score >= 80 
+                  ? "Strong quantitative analysis with clear KPI alignment. Methodology is sound and results are verifiable."
+                  : "Good foundation but could benefit from more specific metrics. Consider strengthening the data verification."
+                }
+              </p>
+            </div>
+            
+            {/* 20% Human feedback */}
+            <div className="p-3 bg-card rounded-lg">
+              <div className="flex items-center gap-2 mb-1">
+                <User className="w-3 h-3 text-primary" />
+                <span className="text-xs font-medium text-primary">Business Reviewer (20%)</span>
+              </div>
+              <p className="text-xs text-muted-foreground italic">"{humanFeedback}"</p>
+            </div>
           </Card>
         </motion.div>
       )}
