@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import LeadForm from "./LeadForm";
-import InteractiveDemo from "./InteractiveDemo";
+import EnhancedDemo from "./demo/EnhancedDemo";
 
 const CTASection = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -51,10 +51,7 @@ const CTASection = () => {
             className="overflow-hidden"
           >
             <Card className="bg-background border border-border p-6 md:p-10">
-              <h3 className="text-lg font-medium text-center text-foreground mb-6">
-                Choose your perspective
-              </h3>
-              <InteractiveDemo onClose={() => setShowDemo(false)} />
+              <EnhancedDemo onClose={() => setShowDemo(false)} />
             </Card>
           </motion.div>
         )}
