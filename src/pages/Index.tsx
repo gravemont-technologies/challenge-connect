@@ -1,6 +1,7 @@
 import TahqeeqLogo from "@/components/brand/TahqeeqLogo";
 import HeroSection from "@/components/landing/HeroSection";
 import DailyLifeAccordions from "@/components/landing/DailyLifeAccordions";
+import InteractiveDemo from "@/components/landing/InteractiveDemo";
 import CTASection from "@/components/landing/CTASection";
 import BrandedText from "@/components/brand/BrandedText";
 
@@ -18,6 +19,7 @@ const Index = () => {
       </header>
 
       <HeroSection />
+      <InteractiveDemo />
       <DailyLifeAccordions />
       <CTASection />
 
