@@ -14,7 +14,7 @@ const BrandedText = ({
   className = "",
   as: Component = "span"
 }: BrandedTextProps) => {
-  return <Component className={cn("font-brand tracking-widest text-primary font-normal", className)}>
+  return <Component className={cn("font-brand tracking-widest text-primary font-medium mx-0 my-0", className)}>
       {children}
     </Component>;
 };
