@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* Tahqeeq Design System - Elite, Precise, Hyperefficient */
 
@@ -122,8 +122,8 @@
 
   /* Brand font class */
   .font-brand {
-    font-family: 'Playfair Display', Georgia, serif;
-    letter-spacing: 0.02em;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.08em;
   }
 }
 

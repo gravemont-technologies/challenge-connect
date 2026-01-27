@@ -6,15 +6,15 @@ interface BrandedTextProps {
 }
 
 /**
- * BrandedText component renders "Tahqeeq" in the brand font (Playfair Display)
+ * BrandedText component renders "TAHQEEQ" in the brand font (Bebas Neue)
  * Use this component wherever the brand name appears in text
  */
 const BrandedText = ({
-  children = "Tahqeeq",
+  children = "TAHQEEQ",
   className = "",
   as: Component = "span"
 }: BrandedTextProps) => {
-  return <Component className={cn("font-brand tracking-tight text-primary font-medium text-center", className)}>
+  return <Component className={cn("font-brand tracking-widest text-primary font-normal", className)}>
       {children}
     </Component>;
 };
