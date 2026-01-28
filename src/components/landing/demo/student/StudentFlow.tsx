@@ -9,7 +9,7 @@ import PortfolioStep from "./PortfolioStep";
 import AIMentorChat from "./AIMentorChat";
 
 // Profile step component
-import { GraduationCap, Code, Users, Briefcase } from "lucide-react";
+import { GraduationCap, Code, Users, Briefcase, Pencil, Palette, Globe, BookOpen } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
@@ -18,6 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 interface UserProfile {
   skills: string[];
+  college: string;
   major: string;
   teamPlayer: string;
 }
@@ -32,16 +33,29 @@ type FlowStep = "profile" | "swipe" | "briefing" | "submit" | "feedback" | "port
 const skillOptions = [
   { id: "python", label: "Python", icon: Code },
   { id: "sql", label: "SQL/Databases", icon: Code },
-  { id: "visualization", label: "Data Visualization", icon: Code },
+  { id: "visualization", label: "Data Visualization", icon: Palette },
   { id: "ml", label: "Machine Learning", icon: Code },
-  { id: "excel", label: "Excel/Sheets", icon: Code },
-  { id: "communication", label: "Communication", icon: Users },
+  { id: "excel", label: "Financial Modeling", icon: Briefcase },
+  { id: "communication", label: "Intercultural Communication", icon: Globe },
+  { id: "writing", label: "Technical Writing", icon: Pencil },
+  { id: "research", label: "Qualitative Research", icon: BookOpen },
+  { id: "design", label: "UI/UX Design", icon: Palette },
+  { id: "marketing", label: "Strategic Marketing", icon: Briefcase },
+];
+
+const colleges = [
+  { id: "engineering", label: "College of Engineering & CS", suggestedSkills: ["python", "sql", "ml"] },
+  { id: "business", label: "School of Business", suggestedSkills: ["excel", "marketing", "communication"] },
+  { id: "arts", label: "College of Arts & Humanities", suggestedSkills: ["writing", "research", "communication"] },
+  { id: "design", label: "School of Design & Media", suggestedSkills: ["design", "visualization", "marketing"] },
+  { id: "science", label: "College of Science", suggestedSkills: ["python", "visualization", "research"] },
 ];
 
 const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
   const [step, setStep] = useState<FlowStep>("profile");
   const [profile, setProfile] = useState<UserProfile>({
     skills: [],
+    college: "",
     major: "",
     teamPlayer: "",
   });
@@ -75,7 +89,16 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
     }));
   };
 
-  const isProfileComplete = profile.skills.length > 0 && profile.major && profile.teamPlayer;
+  const handleCollegeChange = (collegeId: string) => {
+    const college = colleges.find(c => c.id === collegeId);
+    setProfile({ 
+      ...profile, 
+      college: collegeId,
+      skills: college?.suggestedSkills || []
+    });
+  };
+
+  const isProfileComplete = profile.skills.length > 0 && profile.college && profile.major && profile.teamPlayer;
 
   const handleMatch = (challenge: { title: string; company: string; fitScore: number }) => {
     setMatchedChallenge(challenge);
@@ -145,9 +168,24 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
               <p className="text-muted-foreground text-sm mt-1">Help us match you with the right challenges</p>
             </div>
 
+            {/* College selection */}
+            <div className="space-y-2">
+              <Label>College / School</Label>
+              <Select value={profile.college} onValueChange={handleCollegeChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select your college" />
+                </SelectTrigger>
+                <SelectContent>
+                  {colleges.map(c => (
+                    <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Skills multi-select */}
             <div className="space-y-3">
-              <Label>Your Skills (select multiple)</Label>
+              <Label>Your Skills (Tailored to your college)</Label>
               <div className="grid grid-cols-2 gap-2">
                 {skillOptions.map((skill) => (
                   <Card
@@ -172,7 +210,7 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
 
             {/* Major dropdown */}
             <div className="space-y-2">
-              <Label>Major/Field of Study</Label>
+              <Label>Specific Major</Label>
               <Select value={profile.major} onValueChange={(v) => setProfile({ ...profile, major: v })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select your major" />
@@ -183,6 +221,8 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
                   <SelectItem value="engineering">Engineering</SelectItem>
                   <SelectItem value="economics">Economics</SelectItem>
                   <SelectItem value="math">Mathematics/Statistics</SelectItem>
+                  <SelectItem value="arts">Liberal Arts</SelectItem>
+                  <SelectItem value="design">Graphic/Product Design</SelectItem>
                   <SelectItem value="other">Other</SelectItem>
                 </SelectContent>
               </Select>
