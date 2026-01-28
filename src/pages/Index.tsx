@@ -6,7 +6,10 @@ import { PilotDemo } from "@/components/landing/PilotDemo";
 import CTASection from "@/components/landing/CTASection";
 import BrandedText from "@/components/brand/BrandedText";
 
+import { useLanguage } from "@/context/LanguageContext";
+
 const Index = () => {
+  const { t } = useLanguage();
   return (
     <main className="min-h-screen bg-background">
       <SettingsBar />
@@ -16,7 +19,7 @@ const Index = () => {
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <TahqeeqLogo size="md" />
           <span className="text-sm text-muted-foreground hidden sm:inline tracking-wide">
-            Operational Excellence Platform
+            {t("app.tagline") || "Operational Excellence Platform"}
           </span>
         </div>
       </header>
