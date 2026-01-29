@@ -9,7 +9,8 @@ import PortfolioStep from "./PortfolioStep";
 import AIMentorChat from "./AIMentorChat";
 
 // Profile step component
-import { GraduationCap, Code, Users, Briefcase, Pencil, Palette, Globe, BookOpen } from "lucide-react";
+import { GraduationCap, Code, Users, Briefcase, Pencil, Palette, Globe, BookOpen, HelpCircle } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
@@ -114,7 +115,26 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
   return (
     <div className="max-w-xl mx-auto">
       {/* Step indicator */}
-      <div className="mb-8">
+      <div className="mb-8 relative">
+        <div className="absolute -top-10 right-0">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full text-muted-foreground">
+                <HelpCircle className="w-4 h-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent side="left" className="w-64 text-sm">
+              <h4 className="font-semibold mb-2">What's happening at this stage?</h4>
+              <p className="text-muted-foreground leading-relaxed">
+                {step === "profile" && "We are building your student identity. Your college and skills help our matching engine find tasks that fit your expertise."}
+                {step === "swipe" && "Our rule-based engine is scanning corporate tasks to find the best fits for your profile. Swipe to choose your challenge."}
+                {step === "submit" && "You're working on a real corporate subtask. AI mentors are available to guide you through the delivery process."}
+                {step === "feedback" && "The business review cycle. Automated and human checks evaluate your output against professional standards."}
+                {step === "portfolio" && "Task completed. Your success is recorded as a verifiable credential in your professional portfolio."}
+              </p>
+            </PopoverContent>
+          </Popover>
+        </div>
         <div className="flex items-center justify-between mb-2">
           {stepLabels.map((label, index) => (
             <div
