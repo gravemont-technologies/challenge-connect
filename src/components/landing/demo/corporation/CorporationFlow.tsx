@@ -5,7 +5,9 @@ import SubmissionsDashboard from "./SubmissionsDashboard";
 import InternConversion from "./InternConversion";
 import NetworkVisualization from "../shared/NetworkVisualization";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, FileText } from "lucide-react";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 interface CorporationFlowProps {
   onReset: () => void;
@@ -18,6 +20,81 @@ const CorporationFlow = ({ onReset, onComplete }: CorporationFlowProps) => {
   const [step, setStep] = useState<FlowStep>("input");
   const [taskData, setTaskData] = useState<TaskData | null>(null);
   const [approvedCandidates, setApprovedCandidates] = useState<{ studentId: string; score: number }[]>([]);
+
+  const generateReport = () => {
+    if (!taskData) return;
+    
+    const reportName = prompt("Enter report name:", `${taskData.title}_Session_Report`);
+    if (!reportName) return;
+
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+
+    // Title
+    doc.setFontSize(22);
+    doc.setTextColor(90, 39, 39); // Deep Maroon
+    doc.text("Tahqeeq: Operational Excellence Report", pageWidth / 2, 20, { align: "center" });
+
+    // Project Overview
+    doc.setFontSize(16);
+    doc.setTextColor(0);
+    doc.text("Project Overview", 14, 40);
+    
+    doc.setFontSize(11);
+    const overviewData = [
+      ["Title", taskData.title],
+      ["Company", "Your Corporation"],
+      ["Category", taskData.category],
+      ["Budget", taskData.budget],
+      ["Complexity", taskData.complexity],
+      ["Timeline", taskData.timeline],
+      ["Date", new Date().toLocaleDateString()]
+    ];
+
+    (doc as any).autoTable({
+      startY: 45,
+      head: [["Field", "Value"]],
+      body: overviewData,
+      theme: "striped",
+      headStyles: { fillColor: [90, 39, 39] }
+    });
+
+    // Detailed Description
+    const finalY = (doc as any).lastAutoTable.finalY || 45;
+    doc.setFontSize(14);
+    doc.text("Detailed Requirements", 14, finalY + 15);
+    doc.setFontSize(10);
+    const splitDescription = doc.splitTextToSize(taskData.description, pageWidth - 28);
+    doc.text(splitDescription, 14, finalY + 22);
+
+    // Participating Students
+    if (approvedCandidates.length > 0) {
+      doc.setFontSize(14);
+      doc.text("Selected Talent Insights", 14, finalY + 45);
+      
+      const studentData = approvedCandidates.map((c, i) => [
+        `Student #${i + 1}`,
+        c.studentId,
+        `${c.score}%`,
+        "Verified GCC Talent"
+      ]);
+
+      (doc as any).autoTable({
+        startY: finalY + 50,
+        head: [["Rank", "ID/Name", "Fit Score", "Status"]],
+        body: studentData,
+        theme: "grid",
+        headStyles: { fillColor: [90, 39, 39] }
+      });
+    }
+
+    // Footer
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text("Tahqeeq PaaS - GCC Student Operational Excellence Platform", pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: "center" });
+
+    doc.save(`${reportName}.pdf`);
+  };
 
   const stepLabels = ["Define Task", "Launch", "Review", "Convert"];
   const currentStepIndex = step === "input" ? 0 : step === "launching" ? 1 : step === "dashboard" ? 2 : 3;
@@ -126,12 +203,23 @@ const CorporationFlow = ({ onReset, onComplete }: CorporationFlowProps) => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
+            className="space-y-6"
           >
             <InternConversion
               approvedCandidates={approvedCandidates}
               onComplete={onComplete}
               onBack={() => setStep("dashboard")}
             />
+            
+            <div className="pt-4 border-t">
+              <Button 
+                onClick={generateReport}
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2"
+              >
+                <FileText className="w-4 h-4" />
+                Get Full Session Report (PDF)
+              </Button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
