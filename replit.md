@@ -40,7 +40,7 @@ src/
 The application runs on port 5000 using `npm run dev`.
 
 ## Recent Changes
-- Migrated from Lovable to Replit environment
+- Initial project setup in Replit environment
 - Updated Vite config to use port 5000 and allow all hosts
 - Fixed CSS @import order issue
 
