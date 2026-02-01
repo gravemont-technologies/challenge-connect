@@ -19,7 +19,7 @@ const CorporationFlow = ({ onReset, onComplete }: CorporationFlowProps) => {
   const [taskData, setTaskData] = useState<TaskData | null>(null);
   const [approvedCandidates, setApprovedCandidates] = useState<{ studentId: string; score: number }[]>([]);
 
-  const stepLabels = ["Define Task", "Launch", "Review", "Convert"];
+  const stepLabels = ["Create Hackathon", "Launch", "Review", "Convert"];
   const currentStepIndex = step === "input" ? 0 : step === "launching" ? 1 : step === "dashboard" ? 2 : 3;
 
   const handleTaskSubmit = (task: TaskData) => {
@@ -92,9 +92,9 @@ const CorporationFlow = ({ onReset, onComplete }: CorporationFlowProps) => {
             className="space-y-6"
           >
             <div className="text-center mb-4">
-              <h3 className="text-xl font-semibold text-foreground">Launching Challenge</h3>
+              <h3 className="text-xl font-semibold text-foreground">Launching Mini Hackathon</h3>
               <p className="text-muted-foreground text-sm mt-1">
-                Matching students to your task...
+                Matching skilled students to your operational challenge...
               </p>
             </div>
             
