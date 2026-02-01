@@ -62,9 +62,10 @@ const TaskInputStep = ({ onSubmit }: TaskInputStepProps) => {
   const isValid = task.description && task.kpi && task.budget && task.timeline && task.category;
 
   const taskTemplates = [
-    { label: "Route Optimization", desc: "Optimize delivery routes for regional logistics", category: "operations" },
-    { label: "Data Analysis", desc: "Analyze customer behavior patterns from sales data", category: "analytics" },
-    { label: "Inventory Forecast", desc: "Build inventory demand forecasting model", category: "operations" },
+    { label: "Financial Model", desc: "Build Excel-based financial projections and scenario analysis for business planning", category: "finance" },
+    { label: "Statistical Analysis", desc: "Perform regression analysis on sales data to identify growth drivers", category: "analytics" },
+    { label: "Route Optimization", desc: "Optimize delivery routes for regional logistics using Excel Solver", category: "operations" },
+    { label: "Budget Forecast", desc: "Create dynamic Excel budget templates with variance analysis", category: "finance" },
   ];
 
   return (
