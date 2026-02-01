@@ -9,14 +9,12 @@ import { Progress } from "@/components/ui/progress";
 interface Challenge {
   id: number;
   title: string;
-  company: string;
+  company: string; // Anonymized
   category: string;
   fitScore: number;
-  valuesFit: number;
   duration: string;
   reward: string;
   skills: string[];
-  values: string[];
   description: string;
 }
 
@@ -24,7 +22,6 @@ interface ChallengeSwiperProps {
   userProfile: {
     skills: string[];
     major: string;
-    values?: string[];
   };
   onMatch: (challenge: Challenge) => void;
   onBack: () => void;
@@ -37,11 +34,9 @@ const mockChallenges: Challenge[] = [
     company: "Regional Investment Group",
     category: "Finance",
     fitScore: 94,
-    valuesFit: 92,
     duration: "2 weeks",
     reward: "$2,200",
     skills: ["Excel", "Financial Modeling", "Scenario Analysis"],
-    values: ["Excellence", "Innovation"],
     description: "Build a comprehensive Excel-based financial model with 3-year projections, sensitivity analysis, and investor-ready dashboards.",
   },
   {
@@ -50,11 +45,9 @@ const mockChallenges: Challenge[] = [
     company: "Consumer Goods Co.",
     category: "Statistics",
     fitScore: 89,
-    valuesFit: 85,
     duration: "1 week",
     reward: "$1,400",
     skills: ["Excel", "Statistical Analysis", "Regression"],
-    values: ["Personal Growth", "Excellence"],
     description: "Perform multivariate regression analysis on historical sales data to identify key growth drivers and seasonal patterns.",
   },
   {
@@ -63,11 +56,9 @@ const mockChallenges: Challenge[] = [
     company: "Hospitality Holdings",
     category: "Finance",
     fitScore: 91,
-    valuesFit: 88,
     duration: "2 weeks",
     reward: "$1,800",
     skills: ["Excel", "Budgeting", "Variance Analysis"],
-    values: ["Collaboration", "Integrity"],
     description: "Create an automated Excel budget template with real-time variance tracking and department-level drill-downs.",
   },
   {
@@ -76,11 +67,9 @@ const mockChallenges: Challenge[] = [
     company: "Logistics Network",
     category: "Operations",
     fitScore: 87,
-    valuesFit: 90,
     duration: "2 weeks",
     reward: "$1,600",
     skills: ["Excel Solver", "Optimization", "Operations Research"],
-    values: ["Social Impact", "Innovation"],
     description: "Develop an Excel Solver-based model to optimize delivery routes, minimizing fuel costs across 50+ distribution points.",
   },
   {
@@ -89,11 +78,9 @@ const mockChallenges: Challenge[] = [
     company: "Retail Chain Group",
     category: "Analytics",
     fitScore: 92,
-    valuesFit: 86,
     duration: "3 weeks",
     reward: "$2,500",
     skills: ["Excel", "Time Series", "Forecasting"],
-    values: ["Excellence", "Personal Growth"],
     description: "Build a statistical forecasting model using Excel to predict inventory demand with confidence intervals.",
   },
   {
@@ -102,11 +89,9 @@ const mockChallenges: Challenge[] = [
     company: "Infrastructure Partners",
     category: "Finance",
     fitScore: 85,
-    valuesFit: 94,
     duration: "2 weeks",
     reward: "$1,700",
     skills: ["Excel", "NPV/IRR", "Financial Analysis"],
-    values: ["Social Impact", "Integrity"],
     description: "Create a detailed cost-benefit analysis model with NPV, IRR, and payback period calculations for capital projects.",
   },
   {
@@ -115,11 +100,9 @@ const mockChallenges: Challenge[] = [
     company: "E-Commerce Ventures",
     category: "Statistics",
     fitScore: 88,
-    valuesFit: 82,
     duration: "1 week",
     reward: "$1,200",
     skills: ["Excel", "Cohort Analysis", "Data Visualization"],
-    values: ["Innovation", "Collaboration"],
     description: "Analyze customer retention patterns using cohort analysis and create visual dashboards for executive reporting.",
   },
   {
@@ -128,11 +111,9 @@ const mockChallenges: Challenge[] = [
     company: "Manufacturing Corp",
     category: "Finance",
     fitScore: 90,
-    valuesFit: 87,
     duration: "2 weeks",
     reward: "$2,000",
     skills: ["Excel", "Pricing Models", "Elasticity Analysis"],
-    values: ["Excellence", "Innovation"],
     description: "Develop a dynamic pricing model incorporating cost structures, competitor analysis, and demand elasticity curves.",
   },
 ];
@@ -193,61 +174,41 @@ const ChallengeSwiper = ({ userProfile, onMatch, onBack }: ChallengeSwiperProps)
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", delay: 0.2 }}
-            className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3"
+            className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-3"
           >
-            <Heart className="w-8 h-8 text-primary fill-current" />
+            <Heart className="w-8 h-8 text-emerald-600 fill-current" />
           </motion.div>
           <h3 className="text-xl font-semibold text-foreground">It's a Match!</h3>
           <p className="text-muted-foreground text-sm mt-1">
-            Skills & values aligned with this challenge
+            You've been matched with a challenge
           </p>
         </div>
 
-        <Card className="p-5 bg-card border-2 border-primary/20 shadow-md">
+        <Card className="p-5 bg-card border-2 border-emerald-200 shadow-md">
           <div className="flex items-start justify-between mb-3">
             <div>
               <h4 className="font-semibold text-foreground">{matchedChallenge.title}</h4>
               <p className="text-sm text-muted-foreground">{matchedChallenge.company}</p>
             </div>
-            <div className="flex flex-col gap-1 items-end">
-              <Badge className={`${getFitScoreColor(matchedChallenge.fitScore)} border-0`}>
-                <Zap className="w-3 h-3 mr-1" /> {matchedChallenge.fitScore}% Skills
-              </Badge>
-              <Badge className={`${getFitScoreColor(matchedChallenge.valuesFit)} border-0 text-xs`}>
-                {matchedChallenge.valuesFit}% Values
-              </Badge>
-            </div>
+            <Badge className={`${getFitScoreColor(matchedChallenge.fitScore)} border-0`}>
+              <Zap className="w-3 h-3 mr-1" /> {matchedChallenge.fitScore}% Fit
+            </Badge>
           </div>
 
           <p className="text-sm text-muted-foreground mb-4">{matchedChallenge.description}</p>
 
-          <div className="space-y-3 mb-4">
-            <div className="flex flex-wrap gap-2">
-              {matchedChallenge.skills.map((skill) => {
-                const isMatch = userProfile.skills.some(
-                  (s) => s.toLowerCase().includes(skill.toLowerCase()) || skill.toLowerCase().includes(s.toLowerCase())
-                );
-                return (
-                  <Badge key={skill} variant={isMatch ? "default" : "outline"} className="text-xs">
-                    {isMatch && <Sparkles className="w-2.5 h-2.5 mr-1" />}
-                    {skill}
-                  </Badge>
-                );
-              })}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {matchedChallenge.values.map((value) => {
-                const isMatch = userProfile.values?.some(
-                  (v) => v.toLowerCase() === value.toLowerCase()
-                );
-                return (
-                  <Badge key={value} variant="outline" className={`text-xs ${isMatch ? "border-primary text-primary" : ""}`}>
-                    {isMatch && <Heart className="w-2.5 h-2.5 mr-1" />}
-                    {value}
-                  </Badge>
-                );
-              })}
-            </div>
+          <div className="flex flex-wrap gap-2 mb-4">
+            {matchedChallenge.skills.map((skill) => {
+              const isMatch = userProfile.skills.some(
+                (s) => s.toLowerCase().includes(skill.toLowerCase()) || skill.toLowerCase().includes(s.toLowerCase())
+              );
+              return (
+                <Badge key={skill} variant={isMatch ? "default" : "outline"} className="text-xs">
+                  {isMatch && <Sparkles className="w-2.5 h-2.5 mr-1" />}
+                  {skill}
+                </Badge>
+              );
+            })}
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-sm">
@@ -320,14 +281,9 @@ const ChallengeSwiper = ({ userProfile, onMatch, onBack }: ChallengeSwiperProps)
               <Card className="h-full p-5 bg-card border-0 shadow-lg flex flex-col">
                 <div className="flex items-start justify-between mb-3">
                   <Badge variant="secondary">{currentChallenge.category}</Badge>
-                  <div className="flex flex-col gap-1 items-end">
-                    <Badge className={`${getFitScoreColor(currentChallenge.fitScore)} border-0`}>
-                      <Zap className="w-3 h-3 mr-1" /> {currentChallenge.fitScore}% Skills
-                    </Badge>
-                    <Badge className={`${getFitScoreColor(currentChallenge.valuesFit)} border-0 text-xs`}>
-                      {currentChallenge.valuesFit}% Values
-                    </Badge>
-                  </div>
+                  <Badge className={`${getFitScoreColor(currentChallenge.fitScore)} border-0`}>
+                    <Zap className="w-3 h-3 mr-1" /> {currentChallenge.fitScore}% Fit
+                  </Badge>
                 </div>
 
                 <h4 className="font-semibold text-lg text-foreground mb-1">{currentChallenge.title}</h4>
@@ -335,21 +291,12 @@ const ChallengeSwiper = ({ userProfile, onMatch, onBack }: ChallengeSwiperProps)
 
                 <p className="text-sm text-muted-foreground flex-1">{currentChallenge.description}</p>
 
-                <div className="space-y-2 my-3">
-                  <div className="flex flex-wrap gap-1.5">
-                    {currentChallenge.skills.map((skill) => (
-                      <Badge key={skill} variant="outline" className="text-xs">
-                        {skill}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {currentChallenge.values.map((value) => (
-                      <Badge key={value} variant="outline" className="text-xs border-primary/30 text-primary">
-                        {value}
-                      </Badge>
-                    ))}
-                  </div>
+                <div className="flex flex-wrap gap-1.5 my-3">
+                  {currentChallenge.skills.map((skill) => (
+                    <Badge key={skill} variant="outline" className="text-xs">
+                      {skill}
+                    </Badge>
+                  ))}
                 </div>
 
                 <div className="flex items-center justify-between text-sm pt-3 border-t">
@@ -373,14 +320,14 @@ const ChallengeSwiper = ({ userProfile, onMatch, onBack }: ChallengeSwiperProps)
         <Button
           variant="outline"
           size="lg"
-          className="w-14 h-14 rounded-full border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
+          className="w-14 h-14 rounded-full border-red-200 hover:bg-red-50 hover:text-red-600"
           onClick={() => handleSwipe("left")}
         >
           <X className="w-6 h-6" />
         </Button>
         <Button
           size="lg"
-          className="w-14 h-14 rounded-full bg-primary hover:bg-primary/90"
+          className="w-14 h-14 rounded-full bg-emerald-600 hover:bg-emerald-700"
           onClick={() => handleSwipe("right")}
         >
           <Heart className="w-6 h-6" />

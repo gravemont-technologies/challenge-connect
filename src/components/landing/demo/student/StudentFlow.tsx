@@ -22,7 +22,6 @@ interface UserProfile {
   college: string;
   major: string;
   teamPlayer: string;
-  values: string[];
 }
 
 interface StudentFlowProps {
@@ -53,15 +52,6 @@ const colleges = [
   { id: "science", label: "College of Science", suggestedSkills: ["python", "visualization", "research"] },
 ];
 
-const valuesOptions = [
-  { id: "impact", label: "Social Impact", desc: "Making a difference" },
-  { id: "growth", label: "Personal Growth", desc: "Learning & development" },
-  { id: "innovation", label: "Innovation", desc: "Creative problem-solving" },
-  { id: "excellence", label: "Excellence", desc: "High-quality output" },
-  { id: "collaboration", label: "Collaboration", desc: "Team-oriented work" },
-  { id: "integrity", label: "Integrity", desc: "Ethical practices" },
-];
-
 const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
   const [step, setStep] = useState<FlowStep>("profile");
   const [profile, setProfile] = useState<UserProfile>({
@@ -69,7 +59,6 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
     college: "",
     major: "",
     teamPlayer: "",
-    values: [],
   });
   const [matchedChallenge, setMatchedChallenge] = useState<{
     title: string;
@@ -101,15 +90,6 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
     }));
   };
 
-  const toggleValue = (valueId: string) => {
-    setProfile((prev) => ({
-      ...prev,
-      values: prev.values.includes(valueId)
-        ? prev.values.filter((v) => v !== valueId)
-        : prev.values.length < 3 ? [...prev.values, valueId] : prev.values,
-    }));
-  };
-
   const handleCollegeChange = (collegeId: string) => {
     const college = colleges.find(c => c.id === collegeId);
     setProfile({ 
@@ -119,7 +99,7 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
     });
   };
 
-  const isProfileComplete = profile.skills.length > 0 && profile.college && profile.major && profile.teamPlayer && profile.values.length > 0;
+  const isProfileComplete = profile.skills.length > 0 && profile.college && profile.major && profile.teamPlayer;
 
   const handleMatch = (challenge: { title: string; company: string; fitScore: number }) => {
     setMatchedChallenge(challenge);
@@ -297,59 +277,16 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
               </RadioGroup>
             </div>
 
-            {/* Values-fit selection */}
-            <div className="space-y-3">
-              <Label>Your Core Values <span className="text-muted-foreground font-normal">(Select up to 3)</span></Label>
-              <div className="grid grid-cols-2 gap-2">
-                {valuesOptions.map((value) => (
-                  <Card
-                    key={value.id}
-                    onClick={() => toggleValue(value.id)}
-                    className={`p-3 cursor-pointer transition-all border-0 ${
-                      profile.values.includes(value.id)
-                        ? "bg-primary/10 ring-2 ring-primary"
-                        : "bg-muted/50 hover:bg-muted"
-                    }`}
-                  >
-                    <div className="flex flex-col">
-                      <span className={`text-sm font-medium ${
-                        profile.values.includes(value.id) ? "text-primary" : "text-foreground"
-                      }`}>{value.label}</span>
-                      <span className="text-xs text-muted-foreground">{value.desc}</span>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-
-            {(profile.skills.length > 0 || profile.values.length > 0) && (
-              <div className="space-y-2">
-                {profile.skills.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    <span className="text-xs text-muted-foreground mr-1">Skills:</span>
-                    {profile.skills.map((skillId) => {
-                      const skill = skillOptions.find((s) => s.id === skillId);
-                      return skill ? (
-                        <Badge key={skillId} variant="secondary" className="text-xs">
-                          {skill.label}
-                        </Badge>
-                      ) : null;
-                    })}
-                  </div>
-                )}
-                {profile.values.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    <span className="text-xs text-muted-foreground mr-1">Values:</span>
-                    {profile.values.map((valueId) => {
-                      const value = valuesOptions.find((v) => v.id === valueId);
-                      return value ? (
-                        <Badge key={valueId} variant="outline" className="text-xs border-primary/30 text-primary">
-                          {value.label}
-                        </Badge>
-                      ) : null;
-                    })}
-                  </div>
-                )}
+            {profile.skills.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {profile.skills.map((skillId) => {
+                  const skill = skillOptions.find((s) => s.id === skillId);
+                  return skill ? (
+                    <Badge key={skillId} variant="secondary" className="text-xs">
+                      {skill.label}
+                    </Badge>
+                  ) : null;
+                })}
               </div>
             )}
 
@@ -369,7 +306,6 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
               userProfile={{
                 skills: profile.skills.map((id) => skillOptions.find((s) => s.id === id)?.label || id),
                 major: profile.major,
-                values: profile.values.map((id) => valuesOptions.find((v) => v.id === id)?.label || id),
               }}
               onMatch={handleMatch}
               onBack={() => setStep("profile")}

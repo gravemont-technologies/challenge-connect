@@ -2,9 +2,9 @@ import TahqeeqLogo from "@/components/brand/TahqeeqLogo";
 import HeroSection from "@/components/landing/HeroSection";
 import DailyLifeAccordions from "@/components/landing/DailyLifeAccordions";
 import { SettingsBar } from "@/components/landing/SettingsBar";
+import { PilotDemo } from "@/components/landing/PilotDemo";
 import CTASection from "@/components/landing/CTASection";
 import BrandedText from "@/components/brand/BrandedText";
-import CountrySelector from "@/components/landing/CountrySelector";
 
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -18,16 +18,14 @@ const Index = () => {
       <header className="py-5 px-6 md:px-12 lg:px-24 border-b border-border/50">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <TahqeeqLogo size="md" />
-          <div className="flex items-center gap-4">
-            <CountrySelector />
-            <span className="text-sm text-muted-foreground hidden md:inline tracking-wide">
-              {t("app.tagline") || "Operational Excellence Platform"}
-            </span>
-          </div>
+          <span className="text-sm text-muted-foreground hidden sm:inline tracking-wide">
+            {t("app.tagline") || "Operational Excellence Platform"}
+          </span>
         </div>
       </header>
 
       <HeroSection />
+      <PilotDemo />
       <DailyLifeAccordions />
       <CTASection />
 

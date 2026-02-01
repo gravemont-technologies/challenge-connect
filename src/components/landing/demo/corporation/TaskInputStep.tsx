@@ -79,13 +79,8 @@ const TaskInputStep = ({ onSubmit }: TaskInputStepProps) => {
         <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
           <Lightbulb className="w-7 h-7 text-primary" />
         </div>
-        <h3 className="text-xl font-semibold text-foreground">Create a Mini Hackathon</h3>
-        <p className="text-muted-foreground text-sm mt-1">
-          Transform your operational KPIs into focused student challenges
-        </p>
-        <p className="text-xs text-muted-foreground/70 mt-2 max-w-sm mx-auto">
-          Students use tools like Excel, Python & specialized software to deliver tailored solutions for your business needs
-        </p>
+        <h3 className="text-xl font-semibold text-foreground">Define Your Challenge</h3>
+        <p className="text-muted-foreground text-sm mt-1">Describe your operational subtask and success criteria</p>
       </div>
 
       {/* Quick Templates */}

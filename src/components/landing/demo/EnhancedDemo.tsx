@@ -114,10 +114,10 @@ const EnhancedDemo = ({ onClose }: EnhancedDemoProps) => {
                 </div>
                 <h3 className="text-lg font-semibold text-foreground mb-2">I'm a Corporation</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Launch mini hackathons from your KPIs, review AI-scored deliverables, and convert top talent
+                  Launch challenges, review AI-scored submissions, and convert top talent to interns
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2 justify-center">
-                  <Badge variant="outline" className="text-xs font-normal">KPI → Hackathon</Badge>
+                  <Badge variant="outline" className="text-xs font-normal">5-15 min/cycle</Badge>
                   <Badge variant="outline" className="text-xs font-normal">20-40% savings</Badge>
                 </div>
               </Card>
