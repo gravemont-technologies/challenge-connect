@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { useCountry } from "@/context/CountryContext";
 
 interface TaskInputStepProps {
   onSubmit: (task: TaskData) => void;
@@ -16,16 +17,19 @@ interface TaskInputStepProps {
 export interface TaskData {
   description: string;
   kpi: string;
-  budget: string;
+  budgetMin: string;
+  budgetMax: string;
   timeline: string;
   category: string;
 }
 
 const TaskInputStep = ({ onSubmit }: TaskInputStepProps) => {
+  const { country } = useCountry();
   const [task, setTask] = useState<TaskData>({
     description: "",
     kpi: "",
-    budget: "",
+    budgetMin: "",
+    budgetMax: "",
     timeline: "",
     category: "",
   });
@@ -59,7 +63,7 @@ const TaskInputStep = ({ onSubmit }: TaskInputStepProps) => {
     }
   };
 
-  const isValid = task.description && task.kpi && task.budget && task.timeline && task.category;
+  const isValid = task.description && task.kpi && task.budgetMin && task.budgetMax && task.timeline && task.category;
 
   const taskTemplates = [
     { label: "Financial Model", desc: "Build Excel-based financial projections and scenario analysis for business planning", category: "finance" },
@@ -145,20 +149,35 @@ const TaskInputStep = ({ onSubmit }: TaskInputStepProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="budget" className="flex items-center gap-1">
-            <DollarSign className="w-3.5 h-3.5" /> Budget Range
+          <Label className="flex items-center gap-1">
+            <DollarSign className="w-3.5 h-3.5" /> Budget Range ({country.currency})
           </Label>
-          <Select value={task.budget} onValueChange={(v) => setTask({ ...task, budget: v })}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select budget" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="500-1000">$500 - $1,000</SelectItem>
-              <SelectItem value="1000-2500">$1,000 - $2,500</SelectItem>
-              <SelectItem value="2500-5000">$2,500 - $5,000</SelectItem>
-              <SelectItem value="5000+">$5,000+</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                {country.currencySymbol}
+              </span>
+              <Input
+                type="number"
+                placeholder="Min"
+                value={task.budgetMin}
+                onChange={(e) => setTask({ ...task, budgetMin: e.target.value })}
+                className="pl-10"
+              />
+            </div>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">
+                {country.currencySymbol}
+              </span>
+              <Input
+                type="number"
+                placeholder="Max"
+                value={task.budgetMax}
+                onChange={(e) => setTask({ ...task, budgetMax: e.target.value })}
+                className="pl-10"
+              />
+            </div>
+          </div>
         </div>
 
         <div className="space-y-2">

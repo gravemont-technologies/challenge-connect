@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { 
   Moon, 
   Sun, 
@@ -17,26 +16,13 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useTheme } from "next-themes";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCountry } from "@/context/CountryContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
-const countries = [
-  { id: "QA", name: "Qatar", flag: "🇶🇦", color: "0 65% 22%" }, // Deep Maroon
-  { id: "SA", name: "Saudi Arabia", flag: "🇸🇦", color: "142 70% 29%" }, // Green
-  { id: "AE", name: "UAE", flag: "🇦🇪", color: "220 70% 25%" }, // Dark Blue
-  { id: "OM", name: "Oman", flag: "🇴🇲", color: "25 90% 45%" }, // Orange
-  { id: "BH", name: "Bahrain", flag: "🇧🇭", color: "0 86% 47%" }, // Red
-];
 
 export function SettingsBar() {
   const { language, setLanguage, t } = useLanguage();
-  const [countryId, setCountryId] = useState("QA");
+  const { country, setCountryById, countries } = useCountry();
   const { theme, setTheme } = useTheme();
-
-  const selectedCountry = countries.find(c => c.id === countryId) || countries[0];
-
-  useEffect(() => {
-    document.documentElement.style.setProperty("--primary", selectedCountry.color);
-  }, [selectedCountry]);
 
   return (
     <div className="flex items-center gap-2 p-2 bg-muted/30 backdrop-blur-sm border-b border-border/50 sticky top-0 z-50">
@@ -84,8 +70,8 @@ export function SettingsBar() {
           <TooltipProvider>
             <ToggleGroup 
               type="single" 
-              value={countryId} 
-              onValueChange={(value) => value && setCountryId(value)}
+              value={country.id} 
+              onValueChange={(value) => value && setCountryById(value)}
               className="bg-background/50 rounded-md p-0.5 border border-border/30"
             >
               {countries.map((c) => (
