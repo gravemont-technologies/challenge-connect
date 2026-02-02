@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Globe, 
   Moon, 
   Sun, 
-  ChevronDown, 
-  Info,
   Languages,
   Settings
 } from "lucide-react";
@@ -18,8 +14,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useTheme } from "next-themes";
 import { useLanguage } from "@/context/LanguageContext";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const countries = [
   { id: "QA", name: "Qatar", flag: "🇶🇦", color: "0 65% 22%" }, // Deep Maroon
@@ -31,12 +29,14 @@ const countries = [
 
 export function SettingsBar() {
   const { language, setLanguage, t } = useLanguage();
-  const [country, setCountry] = useState(countries[0]);
+  const [countryId, setCountryId] = useState("QA");
   const { theme, setTheme } = useTheme();
 
+  const selectedCountry = countries.find(c => c.id === countryId) || countries[0];
+
   useEffect(() => {
-    document.documentElement.style.setProperty("--primary", country.color);
-  }, [country]);
+    document.documentElement.style.setProperty("--primary", selectedCountry.color);
+  }, [selectedCountry]);
 
   return (
     <div className="flex items-center gap-2 p-2 bg-muted/30 backdrop-blur-sm border-b border-border/50 sticky top-0 z-50">
@@ -80,23 +80,32 @@ export function SettingsBar() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 gap-2">
-                <span className="text-lg leading-none">{country.flag}</span>
-                <span className="text-xs font-medium hidden sm:inline">{country.name}</span>
-                <ChevronDown className="w-3 h-3 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
+          {/* Country Toggle Group */}
+          <TooltipProvider>
+            <ToggleGroup 
+              type="single" 
+              value={countryId} 
+              onValueChange={(value) => value && setCountryId(value)}
+              className="bg-background/50 rounded-md p-0.5 border border-border/30"
+            >
               {countries.map((c) => (
-                <DropdownMenuItem key={c.id} onClick={() => setCountry(c)} className="gap-2">
-                  <span>{c.flag}</span>
-                  <span>{c.name}</span>
-                </DropdownMenuItem>
+                <Tooltip key={c.id}>
+                  <TooltipTrigger asChild>
+                    <ToggleGroupItem 
+                      value={c.id} 
+                      aria-label={c.name}
+                      className="h-7 w-8 px-0 data-[state=on]:bg-primary/15 data-[state=on]:text-primary rounded-sm"
+                    >
+                      <span className="text-base leading-none">{c.flag}</span>
+                    </ToggleGroupItem>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs">
+                    {c.name}
+                  </TooltipContent>
+                </Tooltip>
               ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </ToggleGroup>
+          </TooltipProvider>
         </div>
 
         <div className="flex items-center gap-2">
