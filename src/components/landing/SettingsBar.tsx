@@ -22,8 +22,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const countries = [
   { id: "QA", name: "Qatar", flag: "🇶🇦", color: "0 65% 22%" }, // Deep Maroon
   { id: "SA", name: "Saudi Arabia", flag: "🇸🇦", color: "142 70% 29%" }, // Green
-  { id: "AE", name: "UAE", flag: "🇦🇪", color: "0 100% 25%" }, // Red
-  { id: "OM", name: "Oman", flag: "🇴🇲", color: "142 70% 29%" }, // Red/Green
+  { id: "AE", name: "UAE", flag: "🇦🇪", color: "220 70% 25%" }, // Dark Blue
+  { id: "OM", name: "Oman", flag: "🇴🇲", color: "25 90% 45%" }, // Orange
   { id: "BH", name: "Bahrain", flag: "🇧🇭", color: "0 86% 47%" }, // Red
 ];
 

@@ -22,6 +22,7 @@ interface UserProfile {
   college: string;
   major: string;
   teamPlayer: string;
+  valuesFit: string;
 }
 
 interface StudentFlowProps {
@@ -59,6 +60,7 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
     college: "",
     major: "",
     teamPlayer: "",
+    valuesFit: "",
   });
   const [matchedChallenge, setMatchedChallenge] = useState<{
     title: string;
@@ -99,7 +101,7 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
     });
   };
 
-  const isProfileComplete = profile.skills.length > 0 && profile.college && profile.major && profile.teamPlayer;
+  const isProfileComplete = profile.skills.length > 0 && profile.college && profile.major && profile.teamPlayer && profile.valuesFit;
 
   const handleMatch = (challenge: { title: string; company: string; fitScore: number }) => {
     setMatchedChallenge(challenge);
@@ -272,6 +274,41 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
                   <RadioGroupItem value="hybrid" id="hybrid" />
                   <Label htmlFor="hybrid" className="font-normal cursor-pointer">
                     I'm flexible with both
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            {/* Values Fit selection */}
+            <div className="space-y-2">
+              <Label>What drives you most?</Label>
+              <RadioGroup
+                value={profile.valuesFit}
+                onValueChange={(v) => setProfile({ ...profile, valuesFit: v })}
+                className="flex flex-col gap-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="impact" id="impact" />
+                  <Label htmlFor="impact" className="font-normal cursor-pointer">
+                    Creating measurable impact & seeing real results
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="learning" id="learning" />
+                  <Label htmlFor="learning" className="font-normal cursor-pointer">
+                    Continuous learning & skill development
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="innovation" id="innovation" />
+                  <Label htmlFor="innovation" className="font-normal cursor-pointer">
+                    Innovation & solving complex problems
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="ethics" id="ethics" />
+                  <Label htmlFor="ethics" className="font-normal cursor-pointer">
+                    Ethical practices & social responsibility
                   </Label>
                 </div>
               </RadioGroup>
