@@ -343,6 +343,9 @@ const StudentFlow = ({ onReset, onComplete }: StudentFlowProps) => {
               userProfile={{
                 skills: profile.skills.map((id) => skillOptions.find((s) => s.id === id)?.label || id),
                 major: profile.major,
+                college: profile.college,
+                teamPlayer: profile.teamPlayer,
+                valuesFit: profile.valuesFit,
               }}
               onMatch={handleMatch}
               onBack={() => setStep("profile")}
