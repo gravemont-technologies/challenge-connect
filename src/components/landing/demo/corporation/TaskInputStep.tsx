@@ -66,10 +66,12 @@ const TaskInputStep = ({ onSubmit }: TaskInputStepProps) => {
   const isValid = task.description && task.kpi && task.budgetMin && task.budgetMax && task.timeline && task.category;
 
   const taskTemplates = [
-    { label: "Financial Model", desc: "Build Excel-based financial projections and scenario analysis for business planning", category: "finance" },
-    { label: "Statistical Analysis", desc: "Perform regression analysis on sales data to identify growth drivers", category: "analytics" },
-    { label: "Route Optimization", desc: "Optimize delivery routes for regional logistics using Excel Solver", category: "operations" },
-    { label: "Budget Forecast", desc: "Create dynamic Excel budget templates with variance analysis", category: "finance" },
+    { label: "DCF Valuation", desc: "Build a discounted cash flow model in Excel with WACC calculation, terminal value, and sensitivity tables for acquisition target valuation", category: "finance" },
+    { label: "Demand Forecasting", desc: "Use Excel time-series analysis (moving averages, exponential smoothing) to forecast quarterly product demand and safety stock levels", category: "analytics" },
+    { label: "Solver Optimization", desc: "Develop an Excel Solver model to minimize logistics costs across warehouse allocation, fleet routing, and delivery scheduling constraints", category: "operations" },
+    { label: "Variance Analysis", desc: "Create a dynamic Excel budget-vs-actual dashboard with drill-down variance analysis by department and cost center", category: "finance" },
+    { label: "Regression Model", desc: "Perform multivariate regression in Excel (Data Analysis ToolPak) on sales drivers to quantify pricing elasticity and promotional ROI", category: "analytics" },
+    { label: "Monte Carlo Sim", desc: "Build an Excel-based Monte Carlo simulation using random sampling to stress-test project NPV under uncertain cost and revenue assumptions", category: "finance" },
   ];
 
   return (
