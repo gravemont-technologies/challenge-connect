@@ -71,7 +71,39 @@ Each challenge is auto-classified into a difficulty tier based on complexity sig
 
 The settings bar overlay allows real-time country switching, which updates the entire UI theme and all currency displays.
 
-## 7. Task Specialization
+### Language Support (EN/AR)
+
+Full bilingual support with 80+ translation keys covering:
+- Hero section (title, subtitle, CTA)
+- Benefits section (all 3 time horizons × corp + student badges with detail text)
+- Daily Life accordions (headings + all 12 list items)
+- CTA section (heading, buttons, form title)
+- Interactive demo (disclaimer, role selector, completion screen, badges)
+- Footer and header tagline
+
+**Implementation**: `LanguageContext.tsx` provides `t(key)` function. All components use `t()` for every user-facing string. RTL layout is handled via `document.documentElement.dir` toggle. Tailwind logical properties (`ps-`, `pe-`, `ms-`, `me-`) used throughout for correct RTL spacing.
+
+## 7. Benefits Section
+
+Interactive badge grid placed between Hero and Daily Life sections. Organized by three time horizons with tab navigation.
+
+### Structure
+- **Tabs**: Immediate | Medium-Term | Long-Term
+- **Columns**: Corporations (left) | Students (right)
+- **Badges**: Icon + label + checkmark by default. Click to expand inline with 1-2 sentence detail. Only one badge expanded at a time.
+
+### Benefits Data (48-hour turnaround excluded)
+
+**Immediate — Corps**: 20-40% lower cost, zero onboarding friction, instant Qatarization progress, reduced internal overload
+**Immediate — Students**: Real-world experience within days, quick portfolio entries, points/badges for visible progress
+
+**Medium-Term — Corps**: 30% intern conversion, AI-driven efficiency, stronger PR/morale, lower churn risk (locals retain 2x)
+**Medium-Term — Students**: Professional network growth, soft skills compounding, priority challenge access via level-ups, internship offers
+
+**Long-Term — Corps**: Knowledge retention, talent pipeline flywheel, youth-driven innovation, QNV2030 alignment
+**Long-Term — Students**: Accelerated career launch, GCC-relevant resume, compounding confidence, lifelong career advantage
+
+## 8. Task Specialization
 
 Challenges emphasize **operational precision** and **Excel-driven solutions**:
 - Financial Modeling: DCF, NPV/IRR, working capital, pricing elasticity, Monte Carlo
@@ -80,7 +112,7 @@ Challenges emphasize **operational precision** and **Excel-driven solutions**:
 
 All challenges produce **deployable outputs** for specific business needs with automated KPI verification.
 
-## 8. Interactive Demo
+## 9. Interactive Demo
 
 The landing page features a role-selection demo (Corporation / Student) that walks through the full platform flow using local mock data. No backend required — purely illustrative.
 
@@ -91,11 +123,29 @@ The landing page features a role-selection demo (Corporation / Student) that wal
 - AI mentor chat simulation
 - Gamification panel with XP and badges
 - Contextual help tooltips at each step
+- All text localized via `t()` keys
 
-## 9. Design System
+## 10. Hero Section
+
+### Animated Background Paths
+The hero section features floating SVG curves rendered via `BackgroundPaths` component:
+- Path strokes use `hsl(var(--primary))` — auto-adapts to selected country theme
+- 36 paths per layer, two layers (mirrored positions) for depth
+- Opacity range: 0.03–0.15 (subtle, not overwhelming)
+- Infinite reverse animation with staggered delays
+- Dark mode: slightly higher perceived opacity due to contrast
+
+### Hero Copy
+- **EN**: "Transform operational bottlenecks into precision-matched challenges solved by pre-vetted local talent — cut costs, build your pipeline, and accelerate Qatarization. Automatically."
+- **AR**: "حوّل الاختناقات التشغيلية إلى تحديات موجّهة تُحلّ بواسطة كفاءات محلية مُختارة — خفّض التكاليف، ابنِ خط المواهب، وسرّع التوطين. تلقائيًا."
+
+CTA button scrolls smoothly to the demo/CTA section below.
+
+## 11. Design System
 
 - **Typography**: Inter (body), Bebas Neue (brand headings)
 - **Component Library**: shadcn/ui with Radix UI primitives
 - **Animations**: Framer Motion throughout
 - **Theming**: HSL CSS custom properties with light/dark mode support
 - **Responsive**: Mobile-first with dedicated mobile hooks
+- **Design Principles**: Elite & elevating, hyperefficient, convenient
