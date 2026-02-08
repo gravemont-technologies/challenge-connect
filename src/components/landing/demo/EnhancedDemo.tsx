@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import CorporationFlow from "./corporation/CorporationFlow";
 import StudentFlow from "./student/StudentFlow";
 import BrandedText from "@/components/brand/BrandedText";
+import { useLanguage } from "@/context/LanguageContext";
 
 type DemoRole = "corporation" | "student" | null;
 
@@ -15,6 +16,7 @@ interface EnhancedDemoProps {
 }
 
 const EnhancedDemo = ({ onClose }: EnhancedDemoProps) => {
+  const { t } = useLanguage();
   const [role, setRole] = useState<DemoRole>(null);
   const [completed, setCompleted] = useState(false);
 
@@ -42,23 +44,22 @@ const EnhancedDemo = ({ onClose }: EnhancedDemoProps) => {
         >
           <Sparkles className="w-10 h-10 text-primary" />
         </motion.div>
-        <h3 className="text-2xl font-semibold text-foreground mb-3">Demo Complete!</h3>
+        <h3 className="text-2xl font-semibold text-foreground mb-3">{t("demo.complete.title")}</h3>
         <p className="text-muted-foreground mb-8 leading-relaxed">
-          You've experienced how <BrandedText /> connects corporations with student talent through 
-          precision-matched challenges. Ready to get started for real?
+          {t("demo.complete.desc")}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Card
             onClick={handleReset}
             className="p-4 cursor-pointer hover:shadow-elite transition-all bg-card border border-border/50 rounded-md"
           >
-            <span className="text-sm font-medium">Try Another Role</span>
+            <span className="text-sm font-medium">{t("demo.tryAnother")}</span>
           </Card>
           <Card
             onClick={onClose}
             className="p-4 cursor-pointer hover:shadow-elite transition-all bg-primary text-primary-foreground border-0 rounded-md"
           >
-            <span className="text-sm font-medium">Sign Up Now</span>
+            <span className="text-sm font-medium">{t("demo.signUp")}</span>
           </Card>
         </div>
       </motion.div>
@@ -74,12 +75,12 @@ const EnhancedDemo = ({ onClose }: EnhancedDemoProps) => {
             <TooltipTrigger asChild>
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted/50 rounded-full text-sm text-muted-foreground cursor-help border border-border/30">
                 <Info className="w-4 h-4" />
-                <span className="tracking-wide">Interactive Demo</span>
-                <Badge variant="secondary" className="text-xs font-normal">Simulation</Badge>
+                <span className="tracking-wide">{t("demo.label")}</span>
+                <Badge variant="secondary" className="text-xs font-normal">{t("demo.badge")}</Badge>
               </div>
             </TooltipTrigger>
             <TooltipContent className="max-w-xs">
-              <p>This simulates the real app with rule-based interactions. Sign up to use live features with actual data and real impact.</p>
+              <p>{t("demo.tooltip")}</p>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -97,10 +98,10 @@ const EnhancedDemo = ({ onClose }: EnhancedDemoProps) => {
           >
             <div className="text-center mb-10">
               <h3 className="text-2xl font-semibold text-foreground mb-3">
-                Welcome to <BrandedText className="text-2xl" />
+                {t("demo.welcome")} <BrandedText className="text-2xl" />
               </h3>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Experience the platform that connects operational excellence with emerging talent
+                {t("demo.welcome.sub")}
               </p>
             </div>
 
@@ -112,13 +113,13 @@ const EnhancedDemo = ({ onClose }: EnhancedDemoProps) => {
                 <div className="w-14 h-14 rounded-full bg-primary/8 flex items-center justify-center mx-auto mb-5 group-hover:bg-primary/12 transition-colors">
                   <Building2 className="w-7 h-7 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">I'm a Corporation</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">{t("demo.role.corp")}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Launch challenges, review AI-scored submissions, and convert top talent to interns
+                  {t("demo.role.corp.desc")}
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2 justify-center">
-                  <Badge variant="outline" className="text-xs font-normal">5-15 min/cycle</Badge>
-                  <Badge variant="outline" className="text-xs font-normal">20-40% savings</Badge>
+                  <Badge variant="outline" className="text-xs font-normal">{t("demo.badge.time")}</Badge>
+                  <Badge variant="outline" className="text-xs font-normal">{t("demo.badge.savings")}</Badge>
                 </div>
               </Card>
 
@@ -129,13 +130,13 @@ const EnhancedDemo = ({ onClose }: EnhancedDemoProps) => {
                 <div className="w-14 h-14 rounded-full bg-primary/8 flex items-center justify-center mx-auto mb-5 group-hover:bg-primary/12 transition-colors">
                   <GraduationCap className="w-7 h-7 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-2">I'm a Student</h3>
+                <h3 className="text-lg font-semibold text-foreground mb-2">{t("demo.role.stu")}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Match with challenges, build your portfolio, and earn internship opportunities
+                  {t("demo.role.stu.desc")}
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2 justify-center">
-                  <Badge variant="outline" className="text-xs font-normal">Skill-based matching</Badge>
-                  <Badge variant="outline" className="text-xs font-normal">Earn badges</Badge>
+                  <Badge variant="outline" className="text-xs font-normal">{t("demo.badge.matching")}</Badge>
+                  <Badge variant="outline" className="text-xs font-normal">{t("demo.badge.earn")}</Badge>
                 </div>
               </Card>
             </div>

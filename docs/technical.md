@@ -66,15 +66,19 @@ src/
 │   │   │       ├── NetworkVisualization.tsx
 │   │   │       ├── ValidationFlowVisual.tsx
 │   │   │       └── ImpactScaler.tsx
-│   │   ├── HeroSection.tsx
-│   │   ├── InteractiveDemo.tsx
+│   │   ├── HeroSection.tsx       # Hero with BackgroundPaths
+│   │   ├── BenefitsSection.tsx   # Interactive benefits badge grid
+│   │   ├── DailyLifeAccordions.tsx
 │   │   ├── CTASection.tsx
+│   │   ├── InteractiveDemo.tsx
 │   │   ├── LeadForm.tsx
 │   │   └── SettingsBar.tsx
 │   └── ui/              # shadcn/ui primitives
+│       ├── background-paths.tsx  # Animated SVG background
+│       └── ... (standard shadcn components)
 ├── context/
 │   ├── CountryContext.tsx    # GCC country + currency state
-│   └── LanguageContext.tsx   # i18n (future)
+│   └── LanguageContext.tsx   # i18n with 80+ EN/AR keys
 ├── hooks/
 │   ├── use-mobile.tsx
 │   └── use-toast.ts
@@ -148,7 +152,71 @@ The `SettingsBar` component updates the country context, which:
 1. Updates the CSS `--primary` variable on `document.documentElement`
 2. Updates currency displays in `TaskInputStep` budget inputs
 
-## 6. Interactive Demo Architecture
+## 6. Language Context (`src/context/LanguageContext.tsx`)
+
+### Architecture
+- `LanguageProvider` wraps the app, stores language in `localStorage`
+- `useLanguage()` hook returns `{ language, setLanguage, t }`
+- `t(key)` looks up key in `translations[language]`, falls back to key string
+
+### Translation Coverage (80+ keys)
+| Section | Key Count | Notes |
+|---------|-----------|-------|
+| App/Footer | 3 | Name, tagline, rights |
+| Settings | 4 | Language, theme, light, dark |
+| Hero | 3 | Title, subtitle, CTA |
+| Benefits | 35+ | Heading, tabs, side labels, 22 badges × (label + detail) |
+| Daily Life | 14 | Heading, 2 titles, 12 items |
+| CTA | 5 | Heading, buttons, form title |
+| Demo | 16 | Disclaimer, role cards, completion, badges |
+| Generic | 2 | Get Started, Learn More |
+
+### RTL Support
+- `document.documentElement.dir` set to `"rtl"` when Arabic is active
+- All components use Tailwind logical properties (`ps-`, `pe-`, `ms-`, `me-`) for spacing
+- CSS Grid auto-flips in RTL mode
+- SVG decorative paths are direction-agnostic
+
+## 7. Background Paths (`src/components/ui/background-paths.tsx`)
+
+### Architecture
+- `FloatingPaths` component renders 36 SVG `<path>` elements
+- Two layers with mirrored `position` values (+1, -1) for depth
+- Path formula generates smooth cubic Bézier curves
+
+### Styling
+- Stroke color: `hsl(var(--primary))` — inherits country theme color
+- Stroke opacity: 0.03 + i * 0.003 (gradient from nearly invisible to subtle)
+- Stroke width: 0.5 + i * 0.03 (progressively wider)
+- Animation: infinite reverse pathLength + opacity cycle, 15-25s duration per path
+- Staggered delays: path.id × 0.1s
+
+### Performance
+- Uses `pointer-events-none` to prevent interaction interference
+- SVG viewBox maintains consistent aspect ratio
+- Framer Motion handles GPU-accelerated path animations
+
+## 8. Benefits Section (`src/components/landing/BenefitsSection.tsx`)
+
+### Architecture
+- Tab navigation: Immediate | Medium-Term | Long-Term
+- Two-column grid: Corps | Students
+- Each badge is a `BenefitBadge` sub-component with expand/collapse logic
+- Only one badge expanded at a time (accordion-like behavior)
+
+### Data Structure
+```typescript
+Record<TimeHorizon, { corp: BenefitItem[]; student: BenefitItem[] }>
+```
+Each `BenefitItem` has a `key` (translation key) and `icon` (Lucide React icon).
+Detail text accessed via `${key}.detail` pattern.
+
+### Animation
+- Tab switch: `AnimatePresence mode="wait"` with fade + slide
+- Badge expand: `motion` layout animation + height transition
+- All animations under 300ms for snappy feel
+
+## 9. Interactive Demo Architecture
 
 ### Flow Pattern
 Each flow (Corporation, Student) follows a state-machine pattern:
@@ -179,7 +247,7 @@ Pre-defined templates auto-populate the description and category:
 - Regression Model → Analytics
 - Monte Carlo Sim → Finance
 
-## 7. Design Token System
+## 10. Design Token System
 
 ### CSS Variables (index.css)
 ```css
@@ -206,7 +274,15 @@ colors: {
 
 **Rule**: Never use raw color values in components. Always use semantic tokens (`text-primary`, `bg-muted`, etc.).
 
-## 8. Database Schema (Future)
+### Custom Shadows
+```typescript
+boxShadow: {
+  'elegant': 'var(--shadow-elegant)',
+  'elite': '0 4px 20px -2px rgba(0, 0, 0, 0.08)',
+}
+```
+
+## 11. Database Schema (Future)
 
 See `schema.sql` for the full PostgreSQL schema including:
 - `users` table with role-based access (business, student, admin)
@@ -216,13 +292,13 @@ See `schema.sql` for the full PostgreSQL schema including:
 - `leads` (from landing page form)
 - Row Level Security (RLS) configured per role
 
-## 9. AI Integration Templates
+## 12. AI Integration Templates
 
 See `templates/ai_integration/`:
 - `fit_score_logic.md` — Scoring component weights and migration path to Vector DB
 - `challenge_generator.md` — AI prompt template for auto-generating challenges from business parameters
 
-## 10. Build & Development
+## 13. Build & Development
 
 ```bash
 npm run dev          # Start dev server on port 8080
